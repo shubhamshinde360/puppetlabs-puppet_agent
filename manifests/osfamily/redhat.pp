@@ -20,10 +20,14 @@ class puppet_agent::osfamily::redhat {
       'Amazon': {
         if ("${facts['os']['release']['major']}" == '2') {
           $amz_el_version = '7'
+          $platform_and_version = "el/${amz_el_version}"
+        } elsif ("${facts['os']['release']['major']}" == '2023')  {
+          $amz_el_version = '2023'
+          $platform_and_version = "amazon/${amz_el_version}"
         } else {
           $amz_el_version = '6'
+          $platform_and_version = "el/${amz_el_version}"
         }
-        $platform_and_version = "el/${amz_el_version}"
       }
       default: {
         $platform_and_version = "el/${facts['os']['release']['major']}"
@@ -37,6 +41,19 @@ class puppet_agent::osfamily::redhat {
         true    => "el-${amz_el_version}-${facts['os']['architecture']}",
         default => $facts['platform_tag'],
       }
+      if ($facts['os']['name'] == 'Amazon') {
+          $pe_repo_dir = {
+          true    => "el-${amz_el_version}-${facts['os']['architecture']}",
+          default => $facts['platform_tag'],
+        }
+        if ("${facts['os']['release']['major']}" == '2023') {
+          $pe_repo_dir = {
+          true    => "amazon-${amz_el_version}-${facts['os']['architecture']}",
+          default => $facts['platform_tag'],
+        } 
+        }
+      }
+
       if $puppet_agent::source {
         $source = "${puppet_agent::source}/packages/${pe_server_version}/${pe_repo_dir}"
       } elsif $puppet_agent::alternate_pe_source {
