@@ -14,7 +14,7 @@ test_name 'puppet_agent class: Upgrade agents from puppet7 to puppet8' do
     manifest = <<-PP
 node default {
   if $facts['os']['family'] =~ /^(?i:windows|solaris|aix|darwin)$/ {
-    $_package_version = '#{latest_version}'
+    $_package_version = '8.9.0.44.gf2e8f29e2'
   } else {
     $_package_version = 'latest'
   }
